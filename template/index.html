@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Student Management System</h1>
+    <form id="add-student-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="gpa">GPA:</label>
+        <input type="number" id="gpa" name="gpa" min="0" max="4" step="0.01" required>
+        <label for="flag">Flag:</label>
+        <input type="text" id="flag" name="flag" required>
+        <input type="submit" value="Add Student">
+    </form>
+    <table id="student-table">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>GPA</th>
+            <th>Flag</th>
+            <th>Actions</th>
+        </tr>
+    </table>
+    <script>
+        // Function สำหรับเพิ่มข้อมูลนักศึกษา
+        function addStudent() {
+            let name = document.getElementById("name").value;
+            let surname = document.getElementById("surname").value;
+            let gpax = document.getElementById("gpax").value;
+    
+            // ส่ง request เพื่อเพิ่มข้อมูลนักศึกษา
+                  // ส่ง request เพื่อเพิ่มข้อมูลนักศึกษา
+        fetch('/api/student', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'name': name,
+                'surname': surname,
+                'gpax': gpax
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                // เพิ่มข้อมูลเรียบร้อยแล้ว ดึงข้อมูลนักศึกษาทั้งหมดอีกครั้ง
+                getStudents();
+            } else {
+                alert('Add student failed!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Function สำหรับดึงข้อมูลนักศึกษาทั้งหมด
+    function getStudents() {
+        fetch('/api/students')
+        .then(response => response.json())
+        .then(data => {
+            // ลบข้อมูลทั้งหมดในตาราง
+            let tableBody = document.getElementById('studentTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
+
+            // วนลูปเพื่อแสดงข้อมูลนักศึกษาในตาราง
+            data.forEach(student => {
+                let row = tableBody.insertRow();
+
+                let idCell = row.insertCell();
+                idCell.innerHTML = student.id;
+
+                let nameCell = row.insertCell();
+                nameCell.innerHTML = student.name;
+
+                let surnameCell = row.insertCell();
+                surnameCell.innerHTML = student.surname;
+
+                let gpaxCell = row.insertCell();
+                gpaxCell.innerHTML = student.gpax;
+
+                let flagCell = row.insertCell();
+                flagCell.innerHTML = student.flag;
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // ดึงข้อมูลนักศึกษาทั้งหมดเมื่อเปิดหน้าเว็บ
+    getStudents();
+</script>
+
+    
+    </script>
+</body>
+</html>
+
